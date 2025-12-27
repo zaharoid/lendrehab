@@ -1,0 +1,265 @@
+openapi: 3.0.3
+info:
+  title: LendRehab API
+  version: 1.0.0
+  description: >
+    REST API for a rehabilitation equipment lending prototype.
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Auth
+  - name: Devices
+  - name: Reservations
+
+paths:
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login and receive a Bearer token (prototype)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+            examples:
+              staff:
+                value: { email: "staff@lendrehab.test", password: "staff123" }
+      responses:
+        "200":
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Validation error
+        "401":
+          description: Invalid credentials
+
+  /api/devices:
+    get:
+      tags: [Devices]
+      summary: List devices (public)
+      responses:
+        "200":
+          description: List of device models
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Device" }
+    post:
+      tags: [Devices]
+      summary: Create device (staff only)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DeviceCreate" }
+      responses:
+        "201": { description: Created }
+        "400": { description: Validation error }
+        "401": { description: Unauthorized }
+
+  /api/devices/{id}:
+    get:
+      tags: [Devices]
+      summary: Get device by id (public)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Device
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Device" }
+        "404": { description: Not found }
+    patch:
+      tags: [Devices]
+      summary: Update device (staff only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DeviceUpdate" }
+      responses:
+        "200": { description: Updated }
+        "400": { description: Validation error }
+        "401": { description: Unauthorized }
+        "404": { description: Not found }
+    delete:
+      tags: [Devices]
+      summary: Delete device (staff only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204": { description: Deleted }
+        "401": { description: Unauthorized }
+        "404": { description: Not found }
+
+  /api/reservations:
+    get:
+      tags: [Reservations]
+      summary: List reservations (staff only)
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: List of reservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Reservation" }
+        "401": { description: Unauthorized }
+    post:
+      tags: [Reservations]
+      summary: Create reservation (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReservationCreate" }
+      responses:
+        "201":
+          description: Created reservation
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Reservation" }
+        "400": { description: Validation error }
+        "404": { description: Device not found }
+
+  /api/reservations/{id}:
+    get:
+      tags: [Reservations]
+      summary: Get reservation by id (staff only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Reservation
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Reservation" }
+        "401": { description: Unauthorized }
+        "404": { description: Not found }
+
+  /api/reservations/{id}/status:
+    patch:
+      tags: [Reservations]
+      summary: Update reservation status (staff only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReservationStatusUpdate" }
+      responses:
+        "200": { description: Updated }
+        "400": { description: Validation error }
+        "401": { description: Unauthorized }
+        "404": { description: Not found }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 4 }
+
+    LoginResponse:
+      type: object
+      properties:
+        token: { type: string }
+        role: { type: string, example: "STAFF" }
+
+    Device:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        type: { type: string }
+        size: { type: string }
+        description: { type: string }
+        availableFrom: { type: string, format: date }
+
+    DeviceCreate:
+      type: object
+      required: [name, type, size, description, availableFrom]
+      properties:
+        name: { type: string }
+        type: { type: string }
+        size: { type: string }
+        description: { type: string }
+        availableFrom: { type: string, format: date }
+
+    DeviceUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        type: { type: string }
+        size: { type: string }
+        description: { type: string }
+        availableFrom: { type: string, format: date }
+
+    Reservation:
+      type: object
+      properties:
+        id: { type: integer }
+        citizenName: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        pickupAt: { type: string, format: date-time }
+        referralFile: { type: string, nullable: true }
+        status: { type: string, enum: [PENDING, APPROVED, REJECTED] }
+        deviceId: { type: integer }
+        deviceName: { type: string }
+
+    ReservationCreate:
+      type: object
+      required: [citizenName, email, phone, pickupAt, deviceId]
+      properties:
+        citizenName: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        pickupAt: { type: string, format: date-time }
+        referralFile: { type: string, nullable: true }
+        deviceId: { type: integer }
+
+    ReservationStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED]
