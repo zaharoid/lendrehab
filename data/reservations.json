@@ -1,0 +1,19 @@
+[
+    {
+      "id": 101,
+      "citizenName": "Anna Kowalska",
+      "deviceName": "Standard Wheelchair",
+      "deviceId": 1,
+      "pickupAt": "2025-03-04T12:00",
+      "status": "PENDING"
+    },
+    {
+      "id": 102,
+      "citizenName": "John Doe",
+      "deviceName": "Forearm Crutches",
+      "deviceId": 3,
+      "pickupAt": "2025-03-06T14:00",
+      "status": "APPROVED"
+    }
+  ]
+  

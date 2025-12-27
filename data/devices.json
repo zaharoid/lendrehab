@@ -1,0 +1,27 @@
+[
+    {
+      "id": 1,
+      "name": "Standard Wheelchair",
+      "type": "Wheelchair",
+      "size": "18 inch",
+      "description": "A standard folding wheelchair suitable for indoor and outdoor use.",
+      "availableFrom": "2025-03-02"
+    },
+    {
+      "id": 2,
+      "name": "Lightweight Wheelchair",
+      "type": "Wheelchair",
+      "size": "16 inch",
+      "description": "Light aluminum frame, easy to transport.",
+      "availableFrom": "2025-03-05"
+    },
+    {
+      "id": 3,
+      "name": "Forearm Crutches",
+      "type": "Crutches",
+      "size": "Medium",
+      "description": "Height-adjustable forearm crutches with ergonomic handles.",
+      "availableFrom": "2025-03-01"
+    }
+  ]
+  

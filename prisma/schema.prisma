@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Device {
+  id            Int      @id @default(autoincrement())
+  name          String
+  type          String
+  size          String
+  description   String
+  availableFrom DateTime
+
+  reservations  Reservation[]
+}
+
+model Reservation {
+  id          Int      @id @default(autoincrement())
+  citizenName String
+  email       String
+  phone       String
+  pickupAt    DateTime
+  referralFile String?
+  status      String   @default("PENDING")
+
+  deviceId Int
+  device   Device @relation(fields: [deviceId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
