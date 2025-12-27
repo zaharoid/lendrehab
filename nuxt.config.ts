@@ -4,7 +4,7 @@ const r = createResolver(import.meta.url)
 export default defineNuxtConfig({
   ssr: true,
   modules: ["@nuxtjs/tailwindcss"],
-  css: ["~/assets/tailwind.css"],
+  css: ["~/assets/tailwind.css", "swagger-ui-dist/swagger-ui.css"],
   experimental: { appManifest: false },
   postcss: {
     plugins: {
@@ -14,10 +14,10 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      exclude: ["@prisma/client", "prisma"], // ✅ не трогать Prisma в dev optimize
+      exclude: ["@prisma/client", "prisma"],
     },
     ssr: {
-      external: ["@prisma/client", "prisma"], // ✅ SSR тоже пусть не лезет внутрь
+      external: ["@prisma/client", "prisma"],
     },
   },
   nitro: {

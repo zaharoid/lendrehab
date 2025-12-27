@@ -1,12 +1,12 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setHeader, readMultipartFormData, getResponseStatusText } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, readMultipartFormData, getResponseStatusText } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import path, { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/@vue/shared/dist/shared.cjs.js';
-import fs, { promises, readFileSync } from 'node:fs';
 import { PrismaClient } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/@prisma/client/default.js';
+import fs, { promises } from 'node:fs';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/ufo/dist/index.mjs';
 import process$1 from 'node:process';
@@ -1481,22 +1481,7 @@ _Mvhbrn6AGGH2cbd0B6epgSv1B1u1yGaelCm4lOfiPh4,
 _pWkXSvbFdIjm3p5kwtLBFM7MlzjWxswBisZvgIuDg
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"1819e-kkUMzbyB6ufHBHvTu0MWF5HHlm4\"",
-    "mtime": "2025-12-27T16:32:46.553Z",
-    "size": 98718,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"59db6-uAxzPQnLm0qwHAJ2YCzUnKSI41Y\"",
-    "mtime": "2025-12-27T16:32:46.553Z",
-    "size": 368054,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2449,10 +2434,7 @@ const index_post$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const openapi_get = defineEventHandler((event) => {
-  const p = resolve(process.cwd(), "docs", "openapi.yaml");
-  const yaml = readFileSync(p, "utf-8");
-  setHeader(event, "Content-Type", "text/yaml; charset=utf-8");
-  return yaml;
+  return sendRedirect(event, "/openapi.yaml", 302);
 });
 
 const openapi_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
