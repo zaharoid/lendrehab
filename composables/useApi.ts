@@ -1,23 +1,11 @@
-import { useAuth } from "./useAuth"
-
-type FetchOptions = Parameters<typeof $fetch>[1]
-
-export function useApi() {
+export const useApi = () => {
   const { token } = useAuth()
 
-  const apiFetch = async <T>(url: string, options: FetchOptions = {}) => {
-    const headers: Record<string, string> = {
-      ...(options.headers as Record<string, string> | undefined)
-    }
+  const apiFetch = <T>(url: string, opts: any = {}) => {
+    const headers: Record<string, string> = { ...(opts.headers || {}) }
+    if (token.value) headers.Authorization = `Bearer ${token.value}`
 
-    if (token.value) {
-      headers.Authorization = `Bearer ${token.value}`
-    }
-
-    return $fetch<T>(url, {
-      ...options,
-      headers
-    })
+    return $fetch<T>(url, { ...opts, headers })
   }
 
   return { apiFetch }

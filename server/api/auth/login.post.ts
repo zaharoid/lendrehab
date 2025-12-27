@@ -2,10 +2,13 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   const JoiMod = await import("joi")
-  const Joi = JoiMod.default
-
+  const Joi: any = (JoiMod as any).default ?? JoiMod
   const schema = Joi.object({
-    email: Joi.string().email().required(),
+    email: Joi.string()
+      .trim()
+      .lowercase()
+      .email({ tlds: { allow: false } })
+      .required(),
     password: Joi.string().min(4).required()
   })
 
@@ -14,7 +17,12 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 400,
       statusMessage: "Validation failed",
-      data: { issues: error.details.map((d: any) => ({ path: d.path.join("."), message: d.message })) }
+      data: {
+        issues: error.details.map((d: any) => ({
+          path: d.path.join("."),
+          message: d.message
+        }))
+      }
     })
   }
 

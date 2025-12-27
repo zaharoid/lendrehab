@@ -38,6 +38,28 @@ import { useApi } from "~/composables/useApi"
   }
   
   await load()
+
+  const showAdd = ref(false)
+
+const form = reactive({
+  name: "Test name",
+  type: "Test type",
+  size: "Test size",
+  description: "Test description",
+  availableFrom: new Date().toISOString().slice(0, 16)
+})
+
+const createDevice = async () => {
+  await apiFetch("/api/devices", {
+    method: "POST",
+    body: {
+      ...form,
+      availableFrom: new Date(form.availableFrom).toISOString()
+    }
+  })
+  showAdd.value = false
+  await load() // если у тебя useFetch — вызови refresh()
+}
   
   const filtered = computed(() => {
     return devices.value.filter((d) => {
@@ -56,10 +78,17 @@ import { useApi } from "~/composables/useApi"
   
   <template>
     <div class="space-y-6">
-      <h1 class="text-2xl font-semibold text-slate-900">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-semibold text-slate-900">
         Search available rehabilitation equipment
       </h1>
-  
+      <button
+          class="text-xs px-3 py-1 rounded-md border border-slate-300"
+          @click="createDevice()"
+        >
+          Create new
+        </button>
+      </div>
       <FilterBar v-model="filters" @search="search" />
   
       <div v-if="loading" class="text-sm text-slate-600">Loading devices...</div>

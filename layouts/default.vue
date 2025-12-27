@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuth } from '~/composables/useAuth';
 
-  const { isStaff, logout } = useAuth()
+  const { isStaff, clearAuth } = useAuth()
   </script>
   
   <template>
@@ -22,11 +22,17 @@ import { useAuth } from '~/composables/useAuth';
             >
               Staff
             </NuxtLink>
-  
+            <NuxtLink
+              to="/docs"
+              class="hover:text-primary"
+            >
+              API Documentation
+            </NuxtLink>
+
             <button
               v-if="isStaff"
               class="text-xs px-3 py-1 rounded-md border border-slate-300"
-              @click="logout()"
+              @click="clearAuth()"
             >
               Logout
             </button>

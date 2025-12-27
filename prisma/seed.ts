@@ -1,48 +1,53 @@
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3"
-import { PrismaClient } from "@prisma/client/extension"
+import { PrismaClient } from "@prisma/client"
 
-
-
-const prisma = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: "file:dev.db" })
-})
+const prisma = new PrismaClient()
 
 async function main() {
-    
+  await prisma.reservation.deleteMany()
+  await prisma.device.deleteMany()
+
   await prisma.device.createMany({
     data: [
       {
-        name: "Standard Wheelchair",
+        name: "Wheelchair Basic",
         type: "Wheelchair",
-        size: "18 inch",
-        description: "A standard folding wheelchair suitable for indoor and outdoor use.",
-        availableFrom: new Date("2025-03-02")
+        size: "M",
+        description: "Lightweight wheelchair for everyday use.",
+        availableFrom: new Date(Date.now() + 24 * 3600 * 1000)
       },
       {
-        name: "Lightweight Wheelchair",
-        type: "Wheelchair",
-        size: "16 inch",
-        description: "Light aluminum frame, easy to transport.",
-        availableFrom: new Date("2025-03-05")
-      },
-      {
-        name: "Forearm Crutches",
+        name: "Crutches Pair",
         type: "Crutches",
-        size: "Medium",
-        description: "Height-adjustable forearm crutches with ergonomic handles.",
-        availableFrom: new Date("2025-03-01")
+        size: "L",
+        description: "Adjustable crutches, good condition.",
+        availableFrom: new Date(Date.now() + 2 * 24 * 3600 * 1000)
+      },
+      {
+        name: "Walker",
+        type: "Walker",
+        size: "S",
+        description: "Stable walker with rubber tips.",
+        availableFrom: new Date()
       }
     ]
   })
 
-  console.log("Seed completed!")
+  const device = await prisma.device.findFirst()
+  if (device) {
+    await prisma.reservation.create({
+      data: {
+        citizenName: "John Doe",
+        email: "ivan@example.com",
+        phone: "+431234567",
+        pickupAt: new Date(Date.now() + 3 * 24 * 3600 * 1000),
+        status: "PENDING",
+        deviceId: device.id
+      }
+    })
+  }
 }
 
 main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
   .finally(async () => {
     await prisma.$disconnect()
   })

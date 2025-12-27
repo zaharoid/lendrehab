@@ -1,11 +1,11 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setHeader, getResponseStatusText } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setHeader, readMultipartFormData, getResponseStatusText } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
-import { resolve, dirname, join } from 'node:path';
+import path, { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/@vue/shared/dist/shared.cjs.js';
-import { promises, readFileSync } from 'node:fs';
+import fs, { promises, readFileSync } from 'node:fs';
 import { PrismaClient } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/@prisma/client/default.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/ufo/dist/index.mjs';
@@ -2255,11 +2255,12 @@ const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const login_post = defineEventHandler(async (event) => {
+  var _a;
   const body = await readBody(event);
   const JoiMod = await import('file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/joi/lib/index.js');
-  const Joi = JoiMod.default;
+  const Joi = (_a = JoiMod.default) != null ? _a : JoiMod;
   const schema = Joi.object({
-    email: Joi.string().email().required(),
+    email: Joi.string().trim().lowercase().email({ tlds: { allow: false } }).required(),
     password: Joi.string().min(4).required()
   });
   const { value, error } = schema.validate(body, { abortEarly: false, stripUnknown: true });
@@ -2267,7 +2268,12 @@ const login_post = defineEventHandler(async (event) => {
     throw createError({
       statusCode: 400,
       statusMessage: "Validation failed",
-      data: { issues: error.details.map((d) => ({ path: d.path.join("."), message: d.message })) }
+      data: {
+        issues: error.details.map((d) => ({
+          path: d.path.join("."),
+          message: d.message
+        }))
+      }
     });
   }
   const staffEmail = process.env.STAFF_EMAIL || "staff@lendrehab.test";
@@ -2525,50 +2531,57 @@ const index_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index_post = defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const JoiMod = await import('file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/joi/lib/index.js');
-  const Joi = JoiMod.default;
-  const schema = Joi.object({
-    citizenName: Joi.string().min(2).required(),
-    email: Joi.string().email().required(),
-    phone: Joi.string().min(6).required(),
-    pickupAt: Joi.date().required(),
-    referralFile: Joi.string().allow(null, "").optional(),
-    deviceId: Joi.number().integer().positive().required()
-  });
-  const { value, error } = schema.validate(body, { abortEarly: false, stripUnknown: true });
-  if (error) {
+  const formData = await readMultipartFormData(event);
+  if (!formData) {
+    throw createError({ statusCode: 400, statusMessage: "Invalid form data" });
+  }
+  const getField = (name) => {
+    var _a, _b;
+    return (_b = (_a = formData.find((f) => f.name === name)) == null ? void 0 : _a.data) == null ? void 0 : _b.toString();
+  };
+  const citizenName = getField("citizenName");
+  const email = getField("email");
+  const phone = getField("phone");
+  const pickupAt = getField("pickupAt");
+  const deviceId = Number(getField("deviceId"));
+  if (!citizenName || !email || !phone || !pickupAt || !deviceId) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Validation failed",
-      data: { issues: error.details.map((d) => ({ path: d.path.join("."), message: d.message })) }
+      statusMessage: "Validation failed"
     });
   }
+  let referralFilePath = null;
+  const file = formData.find((f) => f.name === "referralFile" && f.filename);
+  if (file && file.filename) {
+    const uploadsDir = path.join(process.cwd(), "public/uploads");
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    const safeName = `${Date.now()}-${file.filename}`;
+    const fullPath = path.join(uploadsDir, safeName);
+    fs.writeFileSync(fullPath, file.data);
+    referralFilePath = `/uploads/${safeName}`;
+  }
   const prisma = getPrisma();
-  const device = await prisma.device.findUnique({ where: { id: value.deviceId } });
-  if (!device) throw createError({ statusCode: 404, statusMessage: "Device not found" });
+  const device = await prisma.device.findUnique({ where: { id: deviceId } });
+  if (!device) {
+    throw createError({ statusCode: 404, statusMessage: "Device not found" });
+  }
   const created = await prisma.reservation.create({
     data: {
-      citizenName: value.citizenName,
-      email: value.email,
-      phone: value.phone,
-      pickupAt: new Date(value.pickupAt),
-      referralFile: value.referralFile || null,
-      deviceId: value.deviceId
+      citizenName,
+      email,
+      phone,
+      pickupAt: new Date(pickupAt),
+      referralFile: referralFilePath,
+      deviceId
     },
     include: { device: true }
   });
   setResponseStatus(event, 201);
   return {
     id: created.id,
-    citizenName: created.citizenName,
-    email: created.email,
-    phone: created.phone,
-    pickupAt: created.pickupAt,
-    referralFile: created.referralFile,
     status: created.status,
-    deviceId: created.deviceId,
-    deviceName: created.device.name
+    deviceName: created.device.name,
+    referralFile: created.referralFile
   };
 });
 

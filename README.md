@@ -1,3 +1,44 @@
+# LendRehab – Web Systems Laboratory Project
+
+LendRehab is a prototype web system for managing the lending of rehabilitation devices.
+It was developed as part of a university laboratory assignment for web systems.
+
+The system allows citizens to request rehabilitation devices and staff members to manage devices and reservations.
+
+---
+
+## Features
+
+### Public
+- View available rehabilitation devices
+- View device details
+- Submit a reservation request
+- Upload an optional referral file
+
+### Staff
+- Authentication via login endpoint
+- Create, edit and delete devices
+- View all reservations
+- Approve or decline reservation requests
+- Protected API endpoints using Bearer token
+
+---
+
+## Tech Stack
+
+- **Frontend**: Nuxt 3 (Vue 3, Composition API)
+- **Backend**: Nitro / h3 (Nuxt server API)
+- **Database**: Prisma ORM
+- **Validation**: Joi
+- **Styling**: Tailwind CSS
+- **API Documentation**: OpenAPI (YAML)
+
+---
+
+## Project Structure
+
+
+
 # Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.

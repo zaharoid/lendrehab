@@ -1,26 +1,18 @@
-export function useAuth() {
-    const token = useCookie<string | null>("staff_token", {
-      sameSite: "lax",
-      path: "/"
-    })
-  
-    const role = useCookie<string | null>("staff_role", {
-      sameSite: "lax",
-      path: "/"
-    })
-  
-    const isStaff = computed(() => !!token.value)
-  
-    const setAuth = (newToken: string, newRole = "STAFF") => {
-      token.value = newToken
-      role.value = newRole
-    }
-  
-    const logout = () => {
-      token.value = null
-      role.value = null
-    }
-  
-    return { token, role, isStaff, setAuth, logout }
+export const useAuth = () => {
+  const token = useCookie<string | null>('staff_token', { sameSite: 'lax' })
+  const role = useCookie<string | null>('staff_role', { sameSite: 'lax' })
+
+  const isStaff = computed(() => role.value === 'STAFF' && !!token.value)
+
+  const setAuth = (t: string, r: string) => {
+    token.value = t
+    role.value = r
   }
-  
+
+  const clearAuth = () => {
+    token.value = null
+    role.value = null
+  }
+
+  return { token, role, isStaff, setAuth, clearAuth }
+}

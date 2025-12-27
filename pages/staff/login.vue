@@ -1,37 +1,31 @@
-<!-- pages/staff/login.vue -->
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
 import { useAuth } from '~/composables/useAuth'
-
-    definePageMeta({
-      middleware: ["staff"]
+    
+  const { setAuth } = useAuth()
+  const { apiFetch } = useApi()
+  
+  const email = ref("staff@lendrehab.test")
+  const password = ref("staff123")
+  const error = ref<string | null>(null)
+  const loading = ref(false)
+  
+  const submit = async () => {
+  error.value = null
+  loading.value = true
+  try {
+    const res = await apiFetch('/api/auth/login', {
+      method: 'POST',
+      body: { email: email.value, password: password.value }
     })
-    
-    const { setAuth } = useAuth()
-    const { apiFetch } = useApi()
-    
-    const email = ref("staff@lendrehab.test")
-    const password = ref("staff123")
-    const error = ref<string | null>(null)
-    const loading = ref(false)
-    
-    const submit = async () => {
-      error.value = null
-      loading.value = true
-      try {
-        const res = await apiFetch<{ token: string; role: string }>("/api/auth/login", {
-          method: "POST",
-          body: { email: email.value, password: password.value }
-        })
-    
-        setAuth(res.token, res.role)
-        await navigateTo("/staff/dashboard")
-      } catch (e: any) {
-        error.value = e?.data?.error || "Login failed"
-      } finally {
-        loading.value = false
-      }
-    }
+    setAuth(res.token, res.role)
+    await navigateTo('/staff/dashboard')
+  } catch (e: any) {
+    error.value = e?.data?.statusMessage || e?.data?.message || 'Login failed'
+  } finally {
+    loading.value = false
+  }
+}
     </script>
     
     <template>

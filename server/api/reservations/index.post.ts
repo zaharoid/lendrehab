@@ -1,42 +1,62 @@
 import { getPrisma } from "~/server/db/prisma"
+import { readMultipartFormData } from "h3"
+import fs from "fs"
+import path from "path"
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
+  const formData = await readMultipartFormData(event)
+  if (!formData) {
+    throw createError({ statusCode: 400, statusMessage: "Invalid form data" })
+  }
 
-  const JoiMod = await import("joi")
-  const Joi = JoiMod.default
+  const getField = (name: string) =>
+    formData.find((f) => f.name === name)?.data?.toString()
 
-  const schema = Joi.object({
-    citizenName: Joi.string().min(2).required(),
-    email: Joi.string().email().required(),
-    phone: Joi.string().min(6).required(),
-    pickupAt: Joi.date().required(),
-    referralFile: Joi.string().allow(null, "").optional(),
-    deviceId: Joi.number().integer().positive().required()
-  })
+  const citizenName = getField("citizenName")
+  const email = getField("email")
+  const phone = getField("phone")
+  const pickupAt = getField("pickupAt")
+  const deviceId = Number(getField("deviceId"))
 
-  const { value, error } = schema.validate(body, { abortEarly: false, stripUnknown: true })
-  if (error) {
+  if (!citizenName || !email || !phone || !pickupAt || !deviceId) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Validation failed",
-      data: { issues: error.details.map((d: any) => ({ path: d.path.join("."), message: d.message })) }
+      statusMessage: "Validation failed"
     })
+  }
+
+  // ---- FILE HANDLING ----
+  let referralFilePath: string | null = null
+
+  const file = formData.find((f) => f.name === "referralFile" && f.filename)
+
+  if (file && file.filename) {
+    const uploadsDir = path.join(process.cwd(), "public/uploads")
+    fs.mkdirSync(uploadsDir, { recursive: true })
+
+    const safeName = `${Date.now()}-${file.filename}`
+    const fullPath = path.join(uploadsDir, safeName)
+
+    fs.writeFileSync(fullPath, file.data)
+
+    referralFilePath = `/uploads/${safeName}`
   }
 
   const prisma = getPrisma()
 
-  const device = await prisma.device.findUnique({ where: { id: value.deviceId } })
-  if (!device) throw createError({ statusCode: 404, statusMessage: "Device not found" })
+  const device = await prisma.device.findUnique({ where: { id: deviceId } })
+  if (!device) {
+    throw createError({ statusCode: 404, statusMessage: "Device not found" })
+  }
 
   const created = await prisma.reservation.create({
     data: {
-      citizenName: value.citizenName,
-      email: value.email,
-      phone: value.phone,
-      pickupAt: new Date(value.pickupAt),
-      referralFile: value.referralFile || null,
-      deviceId: value.deviceId
+      citizenName,
+      email,
+      phone,
+      pickupAt: new Date(pickupAt),
+      referralFile: referralFilePath,
+      deviceId
     },
     include: { device: true }
   })
@@ -44,13 +64,8 @@ export default defineEventHandler(async (event) => {
   setResponseStatus(event, 201)
   return {
     id: created.id,
-    citizenName: created.citizenName,
-    email: created.email,
-    phone: created.phone,
-    pickupAt: created.pickupAt,
-    referralFile: created.referralFile,
     status: created.status,
-    deviceId: created.deviceId,
-    deviceName: created.device.name
+    deviceName: created.device.name,
+    referralFile: created.referralFile
   }
 })
