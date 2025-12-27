@@ -5,7 +5,7 @@ info:
   description: >
     REST API for a rehabilitation equipment lending prototype.
 servers:
-  - url: http://localhost:3000
+  - url: /
 tags:
   - name: Auth
   - name: Devices
