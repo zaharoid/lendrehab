@@ -23,6 +23,8 @@ export const ReservationForm: typeof import("../components/ReservationForm.vue")
 export const StaffTable: typeof import("../components/StaffTable.vue")['default']
 export const StatusBadge: typeof import("../components/StatusBadge.vue")['default']
 export const Toast: typeof import("../components/Toast.vue")['default']
+export const ChartsBarChart: typeof import("../components/charts/BarChart.vue")['default']
+export const ChartsDoughnutChart: typeof import("../components/charts/DoughnutChart.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
 export const NuxtLayout: typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
 export const NuxtErrorBoundary: typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -55,6 +57,8 @@ export const LazyReservationForm: LazyComponent<typeof import("../components/Res
 export const LazyStaffTable: LazyComponent<typeof import("../components/StaffTable.vue")['default']>
 export const LazyStatusBadge: LazyComponent<typeof import("../components/StatusBadge.vue")['default']>
 export const LazyToast: LazyComponent<typeof import("../components/Toast.vue")['default']>
+export const LazyChartsBarChart: LazyComponent<typeof import("../components/charts/BarChart.vue")['default']>
+export const LazyChartsDoughnutChart: LazyComponent<typeof import("../components/charts/DoughnutChart.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

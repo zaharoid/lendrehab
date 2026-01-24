@@ -90,7 +90,7 @@ const submit = async () => {
             type="text"
             autocomplete="name"
             class="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
-            placeholder="e.g., Ivan Petrov"
+            placeholder="e.g., John Doe"
           />
           <p class="mt-1 text-xs text-slate-500">Minimum 2 characters.</p>
         </div>

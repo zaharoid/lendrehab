@@ -23,6 +23,8 @@ interface _GlobalComponents {
   'StaffTable': typeof import("../../components/StaffTable.vue")['default']
   'StatusBadge': typeof import("../../components/StatusBadge.vue")['default']
   'Toast': typeof import("../../components/Toast.vue")['default']
+  'ChartsBarChart': typeof import("../../components/charts/BarChart.vue")['default']
+  'ChartsDoughnutChart': typeof import("../../components/charts/DoughnutChart.vue")['default']
   'NuxtWelcome': typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   'NuxtLayout': typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   'NuxtErrorBoundary': typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -55,6 +57,8 @@ interface _GlobalComponents {
   'LazyStaffTable': LazyComponent<typeof import("../../components/StaffTable.vue")['default']>
   'LazyStatusBadge': LazyComponent<typeof import("../../components/StatusBadge.vue")['default']>
   'LazyToast': LazyComponent<typeof import("../../components/Toast.vue")['default']>
+  'LazyChartsBarChart': LazyComponent<typeof import("../../components/charts/BarChart.vue")['default']>
+  'LazyChartsDoughnutChart': LazyComponent<typeof import("../../components/charts/DoughnutChart.vue")['default']>
   'LazyNuxtWelcome': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   'LazyNuxtLayout': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   'LazyNuxtErrorBoundary': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

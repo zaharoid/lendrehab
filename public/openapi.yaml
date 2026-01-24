@@ -10,6 +10,7 @@ tags:
   - name: Auth
   - name: Devices
   - name: Reservations
+  - name: Stats
 
 paths:
   /api/auth/login:
@@ -183,6 +184,32 @@ paths:
         "401": { description: Unauthorized }
         "404": { description: Not found }
 
+  /api/stats/reservations/by-status:
+    get:
+      tags: [Stats]
+      summary: Get reservations count grouped by status (staff only)
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Stats by status
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChartData" }
+        "401": { description: Unauthorized }
+
+  /api/stats/reservations/monthly-count:
+    get:
+      tags: [Stats]
+      summary: Get monthly reservations count (staff only)
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Monthly stats
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChartData" }
+        "401": { description: Unauthorized }
+
 components:
   securitySchemes:
     bearerAuth:
@@ -263,3 +290,15 @@ components:
         status:
           type: string
           enum: [PENDING, APPROVED, REJECTED]
+
+    ChartData:
+      type: object
+      properties:
+        labels:
+          type: array
+          items: { type: string }
+          example: ["PENDING", "APPROVED", "REJECTED"]
+        values:
+          type: array
+          items: { type: integer }
+          example: [5, 12, 3]

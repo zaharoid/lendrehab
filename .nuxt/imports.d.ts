@@ -33,4 +33,4 @@ export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useApi } from '../composables/useApi';
 export { useAuth } from '../composables/useAuth';
 export { useFakeApi, Device, Reservation } from '../composables/useFakeApi';
-export { useNuxtDevTools } from '../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
+export { getChartColors, getChartBorderColors, chartColors, chartBorderColors } from '../utils/chartColors';

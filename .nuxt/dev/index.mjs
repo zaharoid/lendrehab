@@ -5,8 +5,8 @@ import path, { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/@vue/shared/dist/shared.cjs.js';
-import { PrismaClient } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/@prisma/client/default.js';
 import fs, { promises } from 'node:fs';
+import { PrismaClient } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/@prisma/client/default.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/Zakhar/Documents/UNI/web_systems/lendrehab/node_modules/ufo/dist/index.mjs';
 import process$1 from 'node:process';
@@ -1905,6 +1905,8 @@ const _lazy_b3oh02 = () => Promise.resolve().then(function () { return _id__get$
 const _lazy_yqhqho = () => Promise.resolve().then(function () { return status_patch$1; });
 const _lazy_2dMm2a = () => Promise.resolve().then(function () { return index_get$1; });
 const _lazy_iXHUJj = () => Promise.resolve().then(function () { return index_post$1; });
+const _lazy_rBqKUg = () => Promise.resolve().then(function () { return byStatus_get$1; });
+const _lazy_8v4W35 = () => Promise.resolve().then(function () { return monthlyCount_get$1; });
 const _lazy_9h8ROJ = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
@@ -1921,6 +1923,8 @@ const handlers = [
   { route: '/api/reservations/:id/status', handler: _lazy_yqhqho, lazy: true, middleware: false, method: "patch" },
   { route: '/api/reservations', handler: _lazy_2dMm2a, lazy: true, middleware: false, method: "get" },
   { route: '/api/reservations', handler: _lazy_iXHUJj, lazy: true, middleware: false, method: "post" },
+  { route: '/api/stats/reservations/by-status', handler: _lazy_rBqKUg, lazy: true, middleware: false, method: "get" },
+  { route: '/api/stats/reservations/monthly-count', handler: _lazy_8v4W35, lazy: true, middleware: false, method: "get" },
   { route: '/__nuxt_error', handler: _lazy_9h8ROJ, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_9h8ROJ, lazy: true, middleware: false, method: undefined }
@@ -2585,6 +2589,45 @@ const index_post = defineEventHandler(async (event) => {
 const index_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: index_post
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const byStatus_get = defineEventHandler(async (event) => {
+  requireStaff(event);
+  const prisma = getPrisma();
+  const rows = await prisma.reservation.groupBy({
+    by: ["status"],
+    _count: { status: true },
+    orderBy: { status: "asc" }
+  });
+  const labels = rows.map((r) => r.status);
+  const values = rows.map((r) => r._count.status);
+  return { labels, values };
+});
+
+const byStatus_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: byStatus_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const monthlyCount_get = defineEventHandler(async (event) => {
+  requireStaff(event);
+  const prisma = getPrisma();
+  const rows = await prisma.$queryRaw`
+    SELECT date_trunc('month', "createdAt") AS month, COUNT(*) AS count
+    FROM "Reservation"
+    GROUP BY 1
+    ORDER BY 1 ASC
+  `;
+  const labels = rows.map(
+    (r) => new Date(r.month).toISOString().slice(0, 7)
+  );
+  const values = rows.map((r) => Number(r.count));
+  return { labels, values };
+});
+
+const monthlyCount_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: monthlyCount_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function renderPayloadResponse(ssrContext) {

@@ -12,10 +12,15 @@ import { useAuth } from '~/composables/useAuth';
           <NuxtLink to="/" class="font-semibold text-primary text-lg">
             LendRehab
           </NuxtLink>
-  
           <nav class="flex gap-5 text-sm font-medium text-slate-700 items-center">
             <NuxtLink to="/" class="hover:text-primary">Home</NuxtLink>
-  
+            <NuxtLink
+              v-if="isStaff"
+              to="/dashboard"
+              class="hover:text-primary"
+            >
+              Dashboard
+            </NuxtLink>
             <NuxtLink
               :to="isStaff ? '/staff/dashboard' : '/staff/login'"
               class="hover:text-primary"
