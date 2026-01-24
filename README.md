@@ -37,7 +37,25 @@ The system allows citizens to request rehabilitation devices and staff members t
 
 ## Project Structure
 
-
+├── pages/
+│ ├── index.vue
+│ ├── devices/
+│ ├── reserve/
+│ ├── staff/
+│ └── dashboard.vue
+├── components/
+│ ├── charts/
+│ └── ui/
+├── server/
+│ ├── api/
+│ │ ├── auth/
+│ │ ├── devices/
+│ │ ├── reservations/
+│ │ └── stats/
+│ └── utils/
+├── prisma/
+│ └── schema.prisma
+└── README.md
 
 # Nuxt Minimal Starter
 
