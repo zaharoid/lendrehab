@@ -1,5 +1,64 @@
-node_modules
-# Keep environment variables out of version control
-.env
+# Dependencies
+node_modules/
+.pnpm-store/
 
+# Build outputs
+.output/
+.nuxt/
+dist/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Prisma
+/prisma/*.db
+/prisma/*.db-journal
 /app/generated/prisma
+
+# Uploads (user generated content)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Nitro
+.nitro/
+
+# Vercel
+.vercel/
+
+# Misc
+*.local
+.cache/
