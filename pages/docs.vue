@@ -1,15 +1,12 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue"
-  
-  const el = ref<HTMLElement | null>(null)
-  
-  onMounted(async () => {
-    // swagger-ui-dist включает готовый bundle (без типов, но нам и не надо)
+const el = ref<HTMLElement | null>(null)
+
+onMounted(async () => {
     const SwaggerUIBundle = (await import("swagger-ui-dist/swagger-ui-bundle")).default
-  
+
     SwaggerUIBundle({
       domNode: el.value!,
-      url: "/openapi.yaml",        // <-- берём YAML как статический файл
+      url: "/openapi.yaml",
       docExpansion: "list",
       deepLinking: true,
       persistAuthorization: true

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
 import { useAuth } from '~/composables/useAuth'
-    
-  const { setAuth } = useAuth()
-  const { apiFetch } = useApi()
-  
-  const email = ref("staff@lendrehab.test")
-  const password = ref("staff123")
-  const error = ref<string | null>(null)
-  const loading = ref(false)
+
+const { setAuth } = useAuth()
+const { apiFetch } = useApi()
+
+const email = ref("")
+const password = ref("")
+const error = ref<string | null>(null)
+const loading = ref(false)
   
   const submit = async () => {
   error.value = null
