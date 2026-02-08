@@ -1,134 +1,101 @@
-# LendRehab – Web Systems Laboratory Project
+# LendRehab
 
-LendRehab is a prototype web system for managing the lending of rehabilitation devices.
-It was developed as part of a university laboratory assignment for web systems.
+**Modern Rehabilitation Equipment Lending Platform**
 
-The system allows citizens to request rehabilitation devices and staff members to manage devices and reservations.
+A full-stack web application for managing the lending of rehabilitation medical devices. Citizens can browse available equipment and submit reservation requests, while staff members can manage inventory and process requests.
+
+**[Live Demo](https://lendrehab.vercel.app)**
 
 ---
 
 ## Features
 
-### Public
-- View available rehabilitation devices
-- View device details
-- Submit a reservation request
-- Upload an optional referral file
-
-### Staff
-- Authentication via login endpoint
-- Create, edit and delete devices
-- View all reservations
-- Approve or decline reservation requests
-- Protected API endpoints using Bearer token
+- **Browse and Filter Devices** — Search rehabilitation equipment by category, availability, and keywords
+- **Device Details** — View comprehensive information including specifications and availability status
+- **Submit Reservations** — Request equipment with optional medical referral file upload
+- **Staff Authentication** — Secure login with Bearer token for administrative access
+- **Device Management** — Full CRUD operations for staff to manage equipment inventory
+- **Reservation Processing** — Staff can approve or decline reservation requests
+- **Analytics Dashboard** — Visual statistics with interactive Chart.js graphs
+- **Interactive API Docs** — Built-in Swagger UI for exploring the REST API
 
 ---
 
-## Tech Stack
+## Tech Highlights
 
-- **Frontend**: Nuxt 3 (Vue 3, Composition API)
-- **Backend**: Nitro / h3 (Nuxt server API)
-- **Database**: Prisma ORM
-- **Validation**: Joi
-- **Styling**: Tailwind CSS
-- **API Documentation**: OpenAPI (YAML)
+| Feature | Implementation |
+|---------|---------------|
+| **Server-Side Rendering** | Nuxt 3 SSR with Nitro server engine |
+| **Authentication** | Bearer token auth with protected API endpoints |
+| **Database** | PostgreSQL with Prisma ORM (type-safe queries) |
+| **API Specification** | OpenAPI 3.0 with Swagger UI documentation |
+| **Validation** | Joi schema validation on all endpoints |
+| **File Uploads** | Multipart form handling for referral documents |
 
 ---
 
-## Project Structure
+## Run Locally
 
-├── pages/
-│ ├── index.vue
-│ ├── devices/
-│ ├── reserve/
-│ ├── staff/
-│ └── dashboard.vue
-├── components/
-│ ├── charts/
-│ └── ui/
-├── server/
-│ ├── api/
-│ │ ├── auth/
-│ │ ├── devices/
-│ │ ├── reservations/
-│ │ └── stats/
-│ └── utils/
-├── prisma/
-│ └── schema.prisma
-└── README.md
+### Prerequisites
 
-# Nuxt Minimal Starter
+- **Node.js** 18.x or higher
+- **PostgreSQL** database (or use [Neon](https://neon.tech), [Supabase](https://supabase.com))
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-## Setup
-
-Make sure to install dependencies:
+### Quick Start
 
 ```bash
-# npm
+# Clone and install
+git clone https://github.com/zaharoid/lendrehab.git
+cd lendrehab
 npm install
 
-# pnpm
-pnpm install
+# Configure environment
+cp .env.example .env
+# Edit .env with your credentials
 
-# yarn
-yarn install
+# Setup database
+npx prisma migrate dev
+npx prisma db seed
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+# Start development server
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Build the application for production:
+### .env.example
 
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/lendrehab
+STAFF_EMAIL=staff@example.com
+STAFF_PASSWORD=your-secure-password
+STAFF_TOKEN=your-secret-token
 ```
 
-Locally preview production build:
+---
 
-```bash
-# npm
-npm run preview
+## API Documentation
 
-# pnpm
-pnpm preview
+Interactive API documentation is available at `/docs` when running the application.
 
-# yarn
-yarn preview
+### Key Endpoints
 
-# bun
-bun run preview
-```
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/api/devices` | List all devices | No |
+| `GET` | `/api/devices/:id` | Get device details | No |
+| `POST` | `/api/devices` | Create a new device | Yes |
+| `PATCH` | `/api/devices/:id` | Update a device | Yes |
+| `DELETE` | `/api/devices/:id` | Delete a device | Yes |
+| `GET` | `/api/reservations` | List all reservations | Yes |
+| `POST` | `/api/reservations` | Create a reservation | No |
+| `PATCH` | `/api/reservations/:id/status` | Update reservation status | Yes |
+| `POST` | `/api/auth/login` | Staff authentication | No |
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+> **Yes** = Requires `Authorization: Bearer <token>` header
+
+---
+
+## License
+
+This project is developed for educational purposes as part of a university web systems course.
